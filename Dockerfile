@@ -1,8 +1,8 @@
 FROM amazonlinux
 
 RUN yum -y update
-RUN yum -y install httpd
-RUN yum -y install php
+RUN yum install -y httpd
+RUN yum install -y php
 
 COPY ./index.php /var/www/html/index.php
 
