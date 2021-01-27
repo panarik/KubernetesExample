@@ -17,6 +17,3 @@ nodeGroups:
   - name : worker-nodes-group-1
     instanceType : m5.large
     desiredCapacity : 2
-  - name : worker-nodes-group-2
-    instanceType : r5.large
-    desiredCapacity : 2
