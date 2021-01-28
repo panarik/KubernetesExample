@@ -1,0 +1,22 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: my-web-deployment
+  labels:
+    app : my-k8s-application
+spec:
+  # с какими pods будет работать
+  selector:
+    matchLabels:
+      project: panarik
+  # создаём pods
+  template:
+    metadata:
+      labels: 
+        project: panarik
+    spec:
+      containers:
+        - name : my-web
+        image: adv4000/k8sphp:version1
+        ports:
+          - containerPort: 80
