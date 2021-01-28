@@ -1,0 +1,54 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: my-web-deployment-autoscaling
+  labels:
+    app :  my-k8s-application
+    env :  dev
+    owner: panarik
+spec:
+  #сколько копий pods
+  replicas: 2
+  # с какими pods будет работать
+  selector:
+    matchLabels:
+      project: my3
+  # создаём pods
+  template:
+    metadata:
+      labels: 
+        project: my3
+    spec:
+      containers:
+        - name : my3-web
+          image: adv4000/k8sphp:version1
+          ports:
+            - containerPort: 80
+
+---
+#Применяем autoscaling к созданному Deployment.
+#При достижении триггеров (70% CPU ИЛИ 80% Memory на всех pods) будут созданы дополнительные pods (до 6шт)
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler # создаём сущность HorizontalPodAutoscaler
+metadata:
+  name: my-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v2beta1v1
+    kind: Deployment # к чему относиться автоскейлинг
+    name: my-web-deployment-autoscaling # имя deployment = имени создаваемого deployment
+  # количество реплик в скейлинге
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    # среднее потребление ресурсов (70% CPU ИЛИ 80% Memory на всех pods)
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 80
+    
+  
